@@ -18,7 +18,10 @@ class Habit(BaseModel, table=True):
     title: str = Field(min_length=1, max_length=255)
     description: str | None = Field(default=None, max_length=255)
     category: str | None = Field(default=None, max_length=100)
-    schedule: dict = Field(default={"type": "daily"}, sa_type=JSON)
+from sqlmodel import Field, Relationship, JSON
+from typing import Any
+
+    schedule: dict[str, Any] = Field(default_factory=lambda: {"type": "daily"}, sa_type=JSON)
     start_date: date | None = Field(default=None)
     backfill_window_hours: int = Field(default=48)
     owner_id: uuid.UUID = Field(
