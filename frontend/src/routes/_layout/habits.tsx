@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/pagination.tsx"
 
 const habitsSearchSchema = z.object({
-  page: z.number().catch(1),
+  page: z.coerce.number().int().positive().catch(1),
 })
 
 const PER_PAGE = 5
