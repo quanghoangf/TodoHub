@@ -19,28 +19,28 @@ class HabitBase(BaseSchema):
     start_date: date | None = Field(default=None)
     backfill_window_hours: int = Field(default=48, ge=0, le=168)  # Max 1 week
     
-    @validator('schedule')
-    def validate_schedule(cls, v):
+    @field_validator('schedule')
+    @classmethod
+    def validate_schedule(cls, v: dict[str, Any]) -> dict[str, Any]:
         """Validate schedule format."""
         if not isinstance(v, dict):
             raise ValueError('Schedule must be a dictionary')
-        
+
         schedule_type = v.get('type')
         if schedule_type not in ['daily', 'weekly', 'custom']:
             raise ValueError('Schedule type must be daily, weekly, or custom')
-        
+
         if schedule_type == 'weekly':
             days = v.get('days', [])
             if not isinstance(days, list) or not all(isinstance(d, int) and 0 <= d <= 6 for d in days):
                 raise ValueError('Weekly schedule must include valid days (0-6)')
-        
+
         if schedule_type == 'custom':
             interval = v.get('interval', 1)
             if not isinstance(interval, int) or interval < 1:
                 raise ValueError('Custom schedule interval must be a positive integer')
-        
-        return v
 
+        return v
 
 class HabitCreate(HabitBase):
     """Habit creation schema."""
