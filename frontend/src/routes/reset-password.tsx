@@ -4,7 +4,7 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
 import { FiLock } from "react-icons/fi"
 
-import { type ApiError } from "@/client"
+import type { ApiError } from "@/client"
 import { Button } from "@/components/ui/button"
 import { PasswordInput } from "@/components/ui/password-input"
 import { isLoggedIn } from "@/hooks/useAuth"
@@ -47,7 +47,9 @@ function ResetPassword() {
   const resetPassword = async (data: NewPasswordForm) => {
     // Password reset with token functionality is not yet implemented in the refactored backend
     // This would need to be implemented with proper token validation
-    throw new Error("Password reset functionality is currently being migrated. Please contact support for assistance.")
+    throw new Error(
+      "Password reset functionality is currently being migrated. Please contact support for assistance.",
+    )
   }
 
   const mutation = useMutation({

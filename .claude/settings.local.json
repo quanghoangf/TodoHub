@@ -5,7 +5,8 @@
       "Bash(touch:*)",
       "Bash(mv:*)",
       "Bash(rm:*)",
-      "Bash(uv run alembic revision:*)"
+      "Bash(uv run alembic revision:*)",
+      "Bash(uv run:*)"
     ],
     "deny": [],
     "ask": []

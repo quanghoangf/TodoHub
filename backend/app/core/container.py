@@ -6,6 +6,7 @@ from fastapi import Depends
 from sqlmodel import Session
 
 from app.core.database import get_session
+from app.domains.analytics.service import AnalyticsService
 from app.domains.auth.service import AuthService
 from app.domains.habits.service import HabitService
 from app.domains.habit_logs.service import HabitLogService
@@ -18,11 +19,19 @@ class ServiceContainer:
     
     def __init__(self, session: Session):
         self.session = session
+        self._analytics_service = None
         self._auth_service = None
         self._user_service = None
         self._habit_service = None
         self._habit_log_service = None
         self._email_service = None
+    
+    @property
+    def analytics_service(self) -> AnalyticsService:
+        """Get analytics service instance."""
+        if self._analytics_service is None:
+            self._analytics_service = AnalyticsService(self.session)
+        return self._analytics_service
     
     @property
     def auth_service(self) -> AuthService:

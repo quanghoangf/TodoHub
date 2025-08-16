@@ -1,17 +1,17 @@
 import {
   Button,
   DialogActionTrigger,
-  Text,
-  VStack,
   HStack,
   Separator,
+  Tabs,
+  Text,
+  VStack,
 } from "@chakra-ui/react"
 import { useState } from "react"
 import { FiEye } from "react-icons/fi"
 
 import type { HabitPublic } from "@/client"
-import HabitLogHistory from "./HabitLogHistory"
-import StreakDisplay from "./StreakDisplay"
+import SimpleAnalytics from "../Analytics/SimpleAnalytics"
 import {
   DialogBody,
   DialogCloseTrigger,
@@ -22,6 +22,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog"
+import HabitLogHistory from "./HabitLogHistory"
+import StreakDisplay from "./StreakDisplay"
 
 interface ViewHabitDetailsProps {
   habit: HabitPublic
@@ -48,47 +50,77 @@ const ViewHabitDetails = ({ habit }: ViewHabitDetailsProps) => {
           <DialogTitle>{habit.title}</DialogTitle>
         </DialogHeader>
         <DialogBody>
-          <VStack gap={6} align="stretch">
-            {/* Basic Info */}
-            <VStack gap={3} align="stretch">
-              <Text fontSize="sm" color="gray.600">
-                <strong>Description:</strong> {habit.description || "No description"}
-              </Text>
-              <Text fontSize="sm" color="gray.600">
-                <strong>Category:</strong> {habit.category || "Uncategorized"}
-              </Text>
-              <Text fontSize="sm" color="gray.600">
-                <strong>Schedule:</strong> {String(habit.schedule?.type || "daily")}
-              </Text>
-              {habit.start_date && (
-                <Text fontSize="sm" color="gray.600">
-                  <strong>Started:</strong> {new Date(habit.start_date).toLocaleDateString()}
+          <Tabs.Root defaultValue="overview" variant="subtle">
+            <Tabs.List>
+              <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
+              <Tabs.Trigger value="analytics">Analytics</Tabs.Trigger>
+              <Tabs.Trigger value="history">History</Tabs.Trigger>
+              <Tabs.Trigger value="export">Export</Tabs.Trigger>
+            </Tabs.List>
+
+            {/* Overview Tab */}
+            <Tabs.Content value="overview">
+              <VStack gap={6} align="stretch" pt={4}>
+                {/* Basic Info */}
+                <VStack gap={3} align="stretch">
+                  <Text fontSize="sm" color="gray.600">
+                    <strong>Description:</strong>{" "}
+                    {habit.description || "No description"}
+                  </Text>
+                  <Text fontSize="sm" color="gray.600">
+                    <strong>Category:</strong>{" "}
+                    {habit.category || "Uncategorized"}
+                  </Text>
+                  <Text fontSize="sm" color="gray.600">
+                    <strong>Schedule:</strong>{" "}
+                    {String(habit.schedule?.type || "daily")}
+                  </Text>
+                  {habit.start_date && (
+                    <Text fontSize="sm" color="gray.600">
+                      <strong>Started:</strong>{" "}
+                      {new Date(habit.start_date).toLocaleDateString()}
+                    </Text>
+                  )}
+                </VStack>
+
+                <Separator />
+
+                {/* Streak Information */}
+                <VStack gap={3} align="stretch">
+                  <Text fontSize="md" fontWeight="semibold">
+                    Streak Progress
+                  </Text>
+                  <HStack justify="center">
+                    <StreakDisplay habitId={habit.id} />
+                  </HStack>
+                </VStack>
+              </VStack>
+            </Tabs.Content>
+
+            {/* Analytics Tab */}
+            <Tabs.Content value="analytics">
+              <SimpleAnalytics habitId={habit.id} />
+            </Tabs.Content>
+
+            {/* History Tab */}
+            <Tabs.Content value="history">
+              <VStack gap={3} align="stretch" pt={4}>
+                <Text fontSize="md" fontWeight="semibold">
+                  Completion History
                 </Text>
-              )}
-            </VStack>
+                <HabitLogHistory habitId={habit.id} />
+              </VStack>
+            </Tabs.Content>
 
-            <Separator />
-
-            {/* Streak Information */}
-            <VStack gap={3} align="stretch">
-              <Text fontSize="md" fontWeight="semibold">
-                Streak Progress
-              </Text>
-              <HStack justify="center">
-                <StreakDisplay habitId={habit.id} />
-              </HStack>
-            </VStack>
-
-            <Separator />
-
-            {/* Log History */}
-            <VStack gap={3} align="stretch">
-              <Text fontSize="md" fontWeight="semibold">
-                Completion History
-              </Text>
-              <HabitLogHistory habitId={habit.id} />
-            </VStack>
-          </VStack>
+            {/* Export Tab */}
+            <Tabs.Content value="export">
+              <VStack gap={3} align="stretch" pt={4}>
+                <Text fontSize="sm" color="gray.600">
+                  Export functionality will be available once the analytics backend is running.
+                </Text>
+              </VStack>
+            </Tabs.Content>
+          </Tabs.Root>
         </DialogBody>
 
         <DialogFooter>

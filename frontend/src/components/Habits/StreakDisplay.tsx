@@ -19,14 +19,14 @@ const StreakDisplay = ({ habitId }: StreakDisplayProps) => {
     queryFn: async () => {
       const response = await fetch(`/api/v1/habits/${habitId}/streak`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       })
-      
+
       if (!response.ok) {
-        throw new Error('Failed to fetch streak data')
+        throw new Error("Failed to fetch streak data")
       }
-      
+
       return response.json()
     },
   })
@@ -58,7 +58,7 @@ const StreakDisplay = ({ habitId }: StreakDisplayProps) => {
           {streak.current_streak} days
         </Badge>
       </VStack>
-      
+
       <VStack gap={1} align="center">
         <HStack gap={1}>
           <FiTrendingUp color="green" />

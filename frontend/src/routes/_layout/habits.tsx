@@ -33,7 +33,10 @@ const PER_PAGE = 5
 function getHabitsQueryOptions({ page }: { page: number }) {
   return {
     queryFn: () =>
-      HabitsService.readHabits({ skip: (page - 1) * PER_PAGE, limit: PER_PAGE }),
+      HabitsService.readHabits({
+        skip: (page - 1) * PER_PAGE,
+        limit: PER_PAGE,
+      }),
     queryKey: ["habits", { page }],
   }
 }

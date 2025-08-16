@@ -1,4 +1,4 @@
-import { Badge, Text, VStack, HStack } from "@chakra-ui/react"
+import { Badge, HStack, Text, VStack } from "@chakra-ui/react"
 import { useQuery } from "@tanstack/react-query"
 import { format } from "date-fns"
 
@@ -26,20 +26,24 @@ const HabitLogHistory = ({ habitId }: HabitLogHistoryProps) => {
     queryFn: async () => {
       const response = await fetch(`/api/v1/habits/${habitId}/logs?limit=30`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       })
-      
+
       if (!response.ok) {
-        throw new Error('Failed to fetch habit logs')
+        throw new Error("Failed to fetch habit logs")
       }
-      
+
       return response.json()
     },
   })
 
   if (isLoading) {
-    return <Text fontSize="sm" color="gray.600">Loading history...</Text>
+    return (
+      <Text fontSize="sm" color="gray.600">
+        Loading history...
+      </Text>
+    )
   }
 
   if (!logs || logs.data.length === 0) {
@@ -57,7 +61,7 @@ const HabitLogHistory = ({ habitId }: HabitLogHistoryProps) => {
       <Text fontSize="sm" fontWeight="semibold" color="gray.700">
         Recent Activity ({logs.count} total logs)
       </Text>
-      
+
       <VStack gap={2} align="stretch" maxH="200px" overflowY="auto">
         {logs.data.map((log) => (
           <HStack
@@ -77,7 +81,7 @@ const HabitLogHistory = ({ habitId }: HabitLogHistoryProps) => {
           </HStack>
         ))}
       </VStack>
-      
+
       {logs.count > 30 && (
         <Text fontSize="xs" color="gray.500" textAlign="center">
           Showing latest 30 entries
