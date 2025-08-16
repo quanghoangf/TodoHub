@@ -6,8 +6,10 @@ from fastapi import Depends
 from sqlmodel import Session
 
 from app.core.database import get_session
+from app.domains.analytics.service import AnalyticsService
 from app.domains.auth.service import AuthService
-from app.domains.items.service import ItemService
+from app.domains.habits.service import HabitService
+from app.domains.habit_logs.service import HabitLogService
 from app.domains.users.service import UserService
 from app.infrastructure.email.service import EmailService
 
@@ -17,10 +19,19 @@ class ServiceContainer:
     
     def __init__(self, session: Session):
         self.session = session
+        self._analytics_service = None
         self._auth_service = None
         self._user_service = None
-        self._item_service = None
+        self._habit_service = None
+        self._habit_log_service = None
         self._email_service = None
+    
+    @property
+    def analytics_service(self) -> AnalyticsService:
+        """Get analytics service instance."""
+        if self._analytics_service is None:
+            self._analytics_service = AnalyticsService(self.session)
+        return self._analytics_service
     
     @property
     def auth_service(self) -> AuthService:
@@ -37,11 +48,18 @@ class ServiceContainer:
         return self._user_service
     
     @property
-    def item_service(self) -> ItemService:
-        """Get item service instance."""
-        if self._item_service is None:
-            self._item_service = ItemService(self.session)
-        return self._item_service
+    def habit_service(self) -> HabitService:
+        """Get habit service instance."""
+        if self._habit_service is None:
+            self._habit_service = HabitService(self.session)
+        return self._habit_service
+    
+    @property
+    def habit_log_service(self) -> HabitLogService:
+        """Get habit log service instance."""
+        if self._habit_log_service is None:
+            self._habit_log_service = HabitLogService(self.session)
+        return self._habit_log_service
     
     @property
     def email_service(self) -> EmailService:

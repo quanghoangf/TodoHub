@@ -4,7 +4,9 @@
       "Bash(mkdir:*)",
       "Bash(touch:*)",
       "Bash(mv:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(uv run alembic revision:*)",
+      "Bash(uv run:*)"
     ],
     "deny": [],
     "ask": []

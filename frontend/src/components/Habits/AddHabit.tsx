@@ -12,7 +12,7 @@ import {
 import { useState } from "react"
 import { FaPlus } from "react-icons/fa"
 
-import { type ItemCreate, ItemsService } from "@/client"
+import { type HabitCreate, HabitsService } from "@/client"
 import type { ApiError } from "@/client/core/ApiError"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
@@ -27,7 +27,7 @@ import {
 } from "../ui/dialog"
 import { Field } from "../ui/field"
 
-const AddItem = () => {
+const AddHabit = () => {
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
   const { showSuccessToast } = useCustomToast()
@@ -36,20 +36,22 @@ const AddItem = () => {
     handleSubmit,
     reset,
     formState: { errors, isValid, isSubmitting },
-  } = useForm<ItemCreate>({
+  } = useForm<HabitCreate>({
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
       title: "",
       description: "",
+      category: "",
+      schedule: { type: "daily" },
     },
   })
 
   const mutation = useMutation({
-    mutationFn: (data: ItemCreate) =>
-      ItemsService.createItem({ requestBody: data }),
+    mutationFn: (data: HabitCreate) =>
+      HabitsService.createHabit({ requestBody: data }),
     onSuccess: () => {
-      showSuccessToast("Item created successfully.")
+      showSuccessToast("Habit created successfully.")
       reset()
       setIsOpen(false)
     },
@@ -57,11 +59,11 @@ const AddItem = () => {
       handleError(err)
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["items"] })
+      queryClient.invalidateQueries({ queryKey: ["habits"] })
     },
   })
 
-  const onSubmit: SubmitHandler<ItemCreate> = (data) => {
+  const onSubmit: SubmitHandler<HabitCreate> = (data) => {
     mutation.mutate(data)
   }
 
@@ -73,18 +75,18 @@ const AddItem = () => {
       onOpenChange={({ open }) => setIsOpen(open)}
     >
       <DialogTrigger asChild>
-        <Button value="add-item" my={4}>
+        <Button value="add-habit" my={4}>
           <FaPlus fontSize="16px" />
-          Add Item
+          Add Habit
         </Button>
       </DialogTrigger>
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Add Item</DialogTitle>
+            <DialogTitle>Add Habit</DialogTitle>
           </DialogHeader>
           <DialogBody>
-            <Text mb={4}>Fill in the details to add a new item.</Text>
+            <Text mb={4}>Fill in the details to add a new habit.</Text>
             <VStack gap={4}>
               <Field
                 required
@@ -111,6 +113,19 @@ const AddItem = () => {
                   id="description"
                   {...register("description")}
                   placeholder="Description"
+                  type="text"
+                />
+              </Field>
+
+              <Field
+                invalid={!!errors.category}
+                errorText={errors.category?.message}
+                label="Category"
+              >
+                <Input
+                  id="category"
+                  {...register("category")}
+                  placeholder="Category"
                   type="text"
                 />
               </Field>
@@ -143,4 +158,4 @@ const AddItem = () => {
   )
 }
 
-export default AddItem
+export default AddHabit

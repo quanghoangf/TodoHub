@@ -9,35 +9,43 @@ export type Body_authentication_login = {
     client_secret?: (string | null);
 };
 
-export type HTTPValidationError = {
-    detail?: Array<ValidationError>;
-};
-
 /**
- * Item creation schema.
+ * Habit creation schema.
  */
-export type ItemCreate = {
+export type HabitCreate = {
     title: string;
     description?: (string | null);
+    category?: (string | null);
+    schedule?: {
+        [key: string]: unknown;
+    };
+    start_date?: (string | null);
+    backfill_window_hours?: number;
 };
 
 /**
- * Public item schema (for API responses).
+ * Public habit schema (for API responses).
  */
-export type ItemPublic = {
+export type HabitPublic = {
     created_at: string;
     updated_at?: (string | null);
     id: string;
     title: string;
     description?: (string | null);
+    category?: (string | null);
+    schedule?: {
+        [key: string]: unknown;
+    };
+    start_date?: (string | null);
+    backfill_window_hours?: number;
     owner_id: string;
 };
 
 /**
- * Paginated items response.
+ * Paginated habits response.
  */
-export type ItemsPublic = {
-    data: Array<ItemPublic>;
+export type HabitsPublic = {
+    data: Array<HabitPublic>;
     count: number;
     total?: (number | null);
     page?: (number | null);
@@ -45,11 +53,21 @@ export type ItemsPublic = {
 };
 
 /**
- * Item update schema.
+ * Habit update schema.
  */
-export type ItemUpdate = {
+export type HabitUpdate = {
     title?: (string | null);
     description?: (string | null);
+    category?: (string | null);
+    schedule?: ({
+    [key: string]: unknown;
+} | null);
+    start_date?: (string | null);
+    backfill_window_hours?: (number | null);
+};
+
+export type HTTPValidationError = {
+    detail?: Array<ValidationError>;
 };
 
 /**
@@ -83,6 +101,13 @@ export type UpdatePassword = {
 };
 
 /**
+ * Timezone update schema.
+ */
+export type UpdateTimezone = {
+    timezone: string;
+};
+
+/**
  * User creation schema.
  */
 export type UserCreate = {
@@ -90,6 +115,7 @@ export type UserCreate = {
     full_name?: (string | null);
     is_active?: boolean;
     is_superuser?: boolean;
+    timezone?: string;
     password: string;
 };
 
@@ -104,6 +130,7 @@ export type UserPublic = {
     full_name?: (string | null);
     is_active?: boolean;
     is_superuser?: boolean;
+    timezone?: string;
 };
 
 /**
@@ -113,6 +140,7 @@ export type UserRegister = {
     email: string;
     password: string;
     full_name?: (string | null);
+    timezone?: string;
 };
 
 /**
@@ -135,6 +163,7 @@ export type UserUpdate = {
     password?: (string | null);
     is_active?: (boolean | null);
     is_superuser?: (boolean | null);
+    timezone?: (string | null);
 };
 
 /**
@@ -143,6 +172,7 @@ export type UserUpdate = {
 export type UserUpdateMe = {
     full_name?: (string | null);
     email?: (string | null);
+    timezone?: (string | null);
 };
 
 export type ValidationError = {
@@ -163,37 +193,37 @@ export type AuthenticationRecoverPasswordData = {
 
 export type AuthenticationRecoverPasswordResponse = (MessageResponse);
 
-export type ItemsReadItemsData = {
+export type HabitsReadHabitsData = {
     limit?: number;
     skip?: number;
 };
 
-export type ItemsReadItemsResponse = (ItemsPublic);
+export type HabitsReadHabitsResponse = (HabitsPublic);
 
-export type ItemsCreateItemData = {
-    requestBody: ItemCreate;
+export type HabitsCreateHabitData = {
+    requestBody: HabitCreate;
 };
 
-export type ItemsCreateItemResponse = (ItemPublic);
+export type HabitsCreateHabitResponse = (HabitPublic);
 
-export type ItemsReadItemData = {
+export type HabitsReadHabitData = {
     id: string;
 };
 
-export type ItemsReadItemResponse = (ItemPublic);
+export type HabitsReadHabitResponse = (HabitPublic);
 
-export type ItemsUpdateItemData = {
+export type HabitsUpdateHabitData = {
     id: string;
-    requestBody: ItemUpdate;
+    requestBody: HabitUpdate;
 };
 
-export type ItemsUpdateItemResponse = (ItemPublic);
+export type HabitsUpdateHabitResponse = (HabitPublic);
 
-export type ItemsDeleteItemData = {
+export type HabitsDeleteHabitData = {
     id: string;
 };
 
-export type ItemsDeleteItemResponse = (MessageResponse);
+export type HabitsDeleteHabitResponse = (MessageResponse);
 
 export type UsersReadUsersData = {
     limit?: number;
@@ -223,6 +253,12 @@ export type UsersUpdatePasswordMeData = {
 };
 
 export type UsersUpdatePasswordMeResponse = (MessageResponse);
+
+export type UsersUpdateTimezoneMeData = {
+    requestBody: UpdateTimezone;
+};
+
+export type UsersUpdateTimezoneMeResponse = (MessageResponse);
 
 export type UsersRegisterUserData = {
     requestBody: UserRegister;

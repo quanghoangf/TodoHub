@@ -11,7 +11,7 @@ import { useState } from "react"
 import { type SubmitHandler, useForm } from "react-hook-form"
 import { FaExchangeAlt } from "react-icons/fa"
 
-import { type ApiError, type ItemPublic, ItemsService } from "@/client"
+import { type ApiError, type HabitPublic, HabitsService } from "@/client"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
 import {
@@ -26,16 +26,17 @@ import {
 } from "../ui/dialog"
 import { Field } from "../ui/field"
 
-interface EditItemProps {
-  item: ItemPublic
+interface EditHabitProps {
+  habit: HabitPublic
 }
 
-interface ItemUpdateForm {
+interface HabitUpdateForm {
   title: string
   description?: string
+  category?: string
 }
 
-const EditItem = ({ item }: EditItemProps) => {
+const EditHabit = ({ habit }: EditHabitProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
   const { showSuccessToast } = useCustomToast()
@@ -44,20 +45,21 @@ const EditItem = ({ item }: EditItemProps) => {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<ItemUpdateForm>({
+  } = useForm<HabitUpdateForm>({
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      ...item,
-      description: item.description ?? undefined,
+      title: habit.title,
+      description: habit.description ?? undefined,
+      category: habit.category ?? undefined,
     },
   })
 
   const mutation = useMutation({
-    mutationFn: (data: ItemUpdateForm) =>
-      ItemsService.updateItem({ id: item.id, requestBody: data }),
+    mutationFn: (data: HabitUpdateForm) =>
+      HabitsService.updateHabit({ id: habit.id, requestBody: data }),
     onSuccess: () => {
-      showSuccessToast("Item updated successfully.")
+      showSuccessToast("Habit updated successfully.")
       reset()
       setIsOpen(false)
     },
@@ -65,11 +67,11 @@ const EditItem = ({ item }: EditItemProps) => {
       handleError(err)
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["items"] })
+      queryClient.invalidateQueries({ queryKey: ["habits"] })
     },
   })
 
-  const onSubmit: SubmitHandler<ItemUpdateForm> = async (data) => {
+  const onSubmit: SubmitHandler<HabitUpdateForm> = async (data) => {
     mutation.mutate(data)
   }
 
@@ -83,16 +85,16 @@ const EditItem = ({ item }: EditItemProps) => {
       <DialogTrigger asChild>
         <Button variant="ghost">
           <FaExchangeAlt fontSize="16px" />
-          Edit Item
+          Edit Habit
         </Button>
       </DialogTrigger>
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Edit Item</DialogTitle>
+            <DialogTitle>Edit Habit</DialogTitle>
           </DialogHeader>
           <DialogBody>
-            <Text mb={4}>Update the item details below.</Text>
+            <Text mb={4}>Update the habit details below.</Text>
             <VStack gap={4}>
               <Field
                 required
@@ -122,6 +124,19 @@ const EditItem = ({ item }: EditItemProps) => {
                   type="text"
                 />
               </Field>
+
+              <Field
+                invalid={!!errors.category}
+                errorText={errors.category?.message}
+                label="Category"
+              >
+                <Input
+                  id="category"
+                  {...register("category")}
+                  placeholder="Category"
+                  type="text"
+                />
+              </Field>
             </VStack>
           </DialogBody>
 
@@ -148,4 +163,4 @@ const EditItem = ({ item }: EditItemProps) => {
   )
 }
 
-export default EditItem
+export default EditHabit

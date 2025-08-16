@@ -12,6 +12,7 @@ from app.domains.users.models import User
 from app.domains.users.repository import UserRepository
 from app.domains.users.schemas import (
     UpdatePassword,
+    UpdateTimezone,
     UserCreate,
     UserPublic,
     UserRegister,
@@ -147,8 +148,18 @@ class UserService:
             email=user_data.email,
             password=user_data.password,
             full_name=user_data.full_name,
+            timezone=user_data.timezone,
             is_active=True,
             is_superuser=False
         )
         
         return self.create_user(user_create)
+    
+    def update_timezone(self, current_user: User, timezone_data: UpdateTimezone) -> MessageResponse:
+        """Update user's timezone."""
+        self.user_repository.update(
+            db_obj=current_user, 
+            obj_in={"timezone": timezone_data.timezone}
+        )
+        
+        return MessageResponse(message="Timezone updated successfully")
