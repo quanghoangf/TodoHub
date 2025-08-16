@@ -11,10 +11,12 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { FiSearch } from "react-icons/fi"
 import { z } from "zod"
 
-import { ItemsService } from "@/client"
-import { ItemActionsMenu } from "@/components/Common/ItemActionsMenu"
-import AddItem from "@/components/Items/AddItem"
-import PendingItems from "@/components/Pending/PendingItems"
+import { HabitsService } from "@/client"
+import HabitActionsMenu from "@/components/Common/HabitActionsMenu"
+import AddHabit from "@/components/Habits/AddHabit"
+import HabitLogger from "@/components/Habits/HabitLogger"
+import StreakDisplay from "@/components/Habits/StreakDisplay"
+import PendingHabits from "@/components/Pending/PendingHabits"
 import {
   PaginationItems,
   PaginationNextTrigger,
@@ -22,31 +24,31 @@ import {
   PaginationRoot,
 } from "@/components/ui/pagination.tsx"
 
-const itemsSearchSchema = z.object({
-  page: z.number().catch(1),
+const habitsSearchSchema = z.object({
+  page: z.coerce.number().int().positive().catch(1),
 })
 
 const PER_PAGE = 5
 
-function getItemsQueryOptions({ page }: { page: number }) {
+function getHabitsQueryOptions({ page }: { page: number }) {
   return {
     queryFn: () =>
-      ItemsService.readItems({ skip: (page - 1) * PER_PAGE, limit: PER_PAGE }),
-    queryKey: ["items", { page }],
+      HabitsService.readHabits({ skip: (page - 1) * PER_PAGE, limit: PER_PAGE }),
+    queryKey: ["habits", { page }],
   }
 }
 
-export const Route = createFileRoute("/_layout/items")({
-  component: Items,
-  validateSearch: (search) => itemsSearchSchema.parse(search),
+export const Route = createFileRoute("/_layout/habits")({
+  component: Habits,
+  validateSearch: (search) => habitsSearchSchema.parse(search),
 })
 
-function ItemsTable() {
+function HabitsTable() {
   const navigate = useNavigate({ from: Route.fullPath })
   const { page } = Route.useSearch()
 
   const { data, isLoading, isPlaceholderData } = useQuery({
-    ...getItemsQueryOptions({ page }),
+    ...getHabitsQueryOptions({ page }),
     placeholderData: (prevData) => prevData,
   })
 
@@ -55,14 +57,14 @@ function ItemsTable() {
       search: (prev: { [key: string]: string }) => ({ ...prev, page }),
     })
 
-  const items = data?.data.slice(0, PER_PAGE) ?? []
+  const habits = data?.data.slice(0, PER_PAGE) ?? []
   const count = data?.count ?? 0
 
   if (isLoading) {
-    return <PendingItems />
+    return <PendingHabits />
   }
 
-  if (items.length === 0) {
+  if (habits.length === 0) {
     return (
       <EmptyState.Root>
         <EmptyState.Content>
@@ -70,9 +72,9 @@ function ItemsTable() {
             <FiSearch />
           </EmptyState.Indicator>
           <VStack textAlign="center">
-            <EmptyState.Title>You don't have any items yet</EmptyState.Title>
+            <EmptyState.Title>You don't have any habits yet</EmptyState.Title>
             <EmptyState.Description>
-              Add a new item to get started
+              Add a new habit to get started
             </EmptyState.Description>
           </VStack>
         </EmptyState.Content>
@@ -85,30 +87,42 @@ function ItemsTable() {
       <Table.Root size={{ base: "sm", md: "md" }}>
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader w="sm">ID</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Title</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Description</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">Category</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">Schedule</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">Streak</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">Log Today</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Actions</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {items?.map((item) => (
-            <Table.Row key={item.id} opacity={isPlaceholderData ? 0.5 : 1}>
+          {habits?.map((habit) => (
+            <Table.Row key={habit.id} opacity={isPlaceholderData ? 0.5 : 1}>
               <Table.Cell truncate maxW="sm">
-                {item.id}
-              </Table.Cell>
-              <Table.Cell truncate maxW="sm">
-                {item.title}
+                {habit.title}
               </Table.Cell>
               <Table.Cell
-                color={!item.description ? "gray" : "inherit"}
+                color={!habit.description ? "gray" : "inherit"}
                 truncate
                 maxW="30%"
               >
-                {item.description || "N/A"}
+                {habit.description || "N/A"}
+              </Table.Cell>
+              <Table.Cell truncate maxW="sm">
+                {habit.category || "N/A"}
+              </Table.Cell>
+              <Table.Cell truncate maxW="sm">
+                {String(habit.schedule?.type || "daily")}
               </Table.Cell>
               <Table.Cell>
-                <ItemActionsMenu item={item} />
+                <StreakDisplay habitId={habit.id} />
+              </Table.Cell>
+              <Table.Cell>
+                <HabitLogger habit={habit} />
+              </Table.Cell>
+              <Table.Cell>
+                <HabitActionsMenu habit={habit} />
               </Table.Cell>
             </Table.Row>
           ))}
@@ -131,14 +145,14 @@ function ItemsTable() {
   )
 }
 
-function Items() {
+function Habits() {
   return (
     <Container maxW="full">
       <Heading size="lg" pt={12}>
-        Items Management
+        Habits Management
       </Heading>
-      <AddItem />
-      <ItemsTable />
+      <AddHabit />
+      <HabitsTable />
     </Container>
   )
 }

@@ -8,7 +8,7 @@ from sqlmodel import Field, Relationship
 from app.domains.shared.models import BaseModel
 
 if TYPE_CHECKING:
-    from app.domains.items.models import Item
+    from app.domains.habits.models import Habit
 
 
 class User(BaseModel, table=True):
@@ -19,9 +19,10 @@ class User(BaseModel, table=True):
     hashed_password: str
     is_active: bool = True
     is_superuser: bool = False
+    timezone: str = Field(default="UTC", max_length=50)
     
     # Relationships
-    items: list["Item"] = Relationship(
+    habits: list["Habit"] = Relationship(
         back_populates="owner", 
         cascade_delete=True,
         sa_relationship_kwargs={"lazy": "select"}

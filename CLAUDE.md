@@ -136,3 +136,4 @@ bash scripts/test.sh       # Runs complete Docker-based test suite
 - Frontend dev server: http://localhost:5173
 - Backend dev server: http://localhost:8000
 - All services use consistent ports for easy local/Docker switching
+- remove claude credit
