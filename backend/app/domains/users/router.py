@@ -10,6 +10,7 @@ from app.domains.shared.dependencies import CurrentSuperUser, CurrentUser, Sessi
 from app.domains.shared.schemas import MessageResponse
 from app.domains.users.schemas import (
     UpdatePassword,
+    UpdateTimezone,
     UserCreate,
     UserPublic,
     UserRegister,
@@ -81,6 +82,17 @@ def update_password_me(
 ) -> Any:
     """Update own password."""
     return container.user_service.update_password(current_user, body)
+
+
+@router.patch("/me/timezone", response_model=MessageResponse)
+def update_timezone_me(
+    *, 
+    container: ServiceContainerDep,
+    body: UpdateTimezone, 
+    current_user: CurrentUser
+) -> Any:
+    """Update own timezone."""
+    return container.user_service.update_timezone(current_user, body)
 
 
 @router.get("/me", response_model=UserPublic)

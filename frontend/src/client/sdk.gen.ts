@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { AuthenticationLoginData, AuthenticationLoginResponse, AuthenticationRecoverPasswordData, AuthenticationRecoverPasswordResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsHealthCheckResponse, UtilsTestEmailResponse } from './types.gen';
+import type { AuthenticationLoginData, AuthenticationLoginResponse, AuthenticationRecoverPasswordData, AuthenticationRecoverPasswordResponse, HabitsReadHabitsData, HabitsReadHabitsResponse, HabitsCreateHabitData, HabitsCreateHabitResponse, HabitsReadHabitData, HabitsReadHabitResponse, HabitsUpdateHabitData, HabitsUpdateHabitResponse, HabitsDeleteHabitData, HabitsDeleteHabitResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersUpdateTimezoneMeData, UsersUpdateTimezoneMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsHealthCheckResponse, UtilsTestEmailResponse } from './types.gen';
 
 export class AuthenticationService {
     /**
@@ -48,20 +48,20 @@ export class AuthenticationService {
     
 }
 
-export class ItemsService {
+export class HabitsService {
     /**
-     * Read Items
-     * Retrieve items.
+     * Read Habits
+     * Retrieve habits.
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
-     * @returns ItemsPublic Successful Response
+     * @returns HabitsPublic Successful Response
      * @throws ApiError
      */
-    public static readItems(data: ItemsReadItemsData = {}): CancelablePromise<ItemsReadItemsResponse> {
+    public static readHabits(data: HabitsReadHabitsData = {}): CancelablePromise<HabitsReadHabitsResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/items/',
+            url: '/api/v1/habits/',
             query: {
                 skip: data.skip,
                 limit: data.limit
@@ -73,17 +73,17 @@ export class ItemsService {
     }
     
     /**
-     * Create Item
-     * Create new item.
+     * Create Habit
+     * Create new habit.
      * @param data The data for the request.
      * @param data.requestBody
-     * @returns ItemPublic Successful Response
+     * @returns HabitPublic Successful Response
      * @throws ApiError
      */
-    public static createItem(data: ItemsCreateItemData): CancelablePromise<ItemsCreateItemResponse> {
+    public static createHabit(data: HabitsCreateHabitData): CancelablePromise<HabitsCreateHabitResponse> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/v1/items/',
+            url: '/api/v1/habits/',
             body: data.requestBody,
             mediaType: 'application/json',
             errors: {
@@ -93,17 +93,17 @@ export class ItemsService {
     }
     
     /**
-     * Read Item
-     * Get item by ID.
+     * Read Habit
+     * Get habit by ID.
      * @param data The data for the request.
      * @param data.id
-     * @returns ItemPublic Successful Response
+     * @returns HabitPublic Successful Response
      * @throws ApiError
      */
-    public static readItem(data: ItemsReadItemData): CancelablePromise<ItemsReadItemResponse> {
+    public static readHabit(data: HabitsReadHabitData): CancelablePromise<HabitsReadHabitResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/items/{id}',
+            url: '/api/v1/habits/{id}',
             path: {
                 id: data.id
             },
@@ -114,18 +114,18 @@ export class ItemsService {
     }
     
     /**
-     * Update Item
-     * Update an item.
+     * Update Habit
+     * Update a habit.
      * @param data The data for the request.
      * @param data.id
      * @param data.requestBody
-     * @returns ItemPublic Successful Response
+     * @returns HabitPublic Successful Response
      * @throws ApiError
      */
-    public static updateItem(data: ItemsUpdateItemData): CancelablePromise<ItemsUpdateItemResponse> {
+    public static updateHabit(data: HabitsUpdateHabitData): CancelablePromise<HabitsUpdateHabitResponse> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/v1/items/{id}',
+            url: '/api/v1/habits/{id}',
             path: {
                 id: data.id
             },
@@ -138,17 +138,17 @@ export class ItemsService {
     }
     
     /**
-     * Delete Item
-     * Delete an item.
+     * Delete Habit
+     * Delete a habit.
      * @param data The data for the request.
      * @param data.id
      * @returns MessageResponse Successful Response
      * @throws ApiError
      */
-    public static deleteItem(data: ItemsDeleteItemData): CancelablePromise<ItemsDeleteItemResponse> {
+    public static deleteHabit(data: HabitsDeleteHabitData): CancelablePromise<HabitsDeleteHabitResponse> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/v1/items/{id}',
+            url: '/api/v1/habits/{id}',
             path: {
                 id: data.id
             },
@@ -262,6 +262,26 @@ export class UsersService {
         return __request(OpenAPI, {
             method: 'PATCH',
             url: '/api/v1/users/me/password',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Timezone Me
+     * Update own timezone.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns MessageResponse Successful Response
+     * @throws ApiError
+     */
+    public static updateTimezoneMe(data: UsersUpdateTimezoneMeData): CancelablePromise<UsersUpdateTimezoneMeResponse> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/v1/users/me/timezone',
             body: data.requestBody,
             mediaType: 'application/json',
             errors: {

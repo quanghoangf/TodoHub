@@ -20,7 +20,7 @@ fileConfig(config.config_file_name)
 
 # Import all models to ensure they are registered with SQLModel
 from app.domains.users.models import User  # noqa
-from app.domains.items.models import Item  # noqa
+from app.domains.habits.models import Habit  # noqa
 from app.core.config import settings  # noqa
 from sqlmodel import SQLModel
 
